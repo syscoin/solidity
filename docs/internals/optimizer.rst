@@ -528,6 +528,7 @@ The above would be transformed into
 
 .. code-block:: yul
 
+    // This will not compile (y and x are undefined)
     {
         let _1 := mload(y)
         let _2 := mul(_1, 0x20)
@@ -633,7 +634,7 @@ The SSA transform converts this snippet to the following:
 
     {
         let a_1 := 1
-        a := a_1
+        let a := a_1
         let a_2 := mload(a_1)
         a := a_2
         let a_3 := sload(a_2)
@@ -1186,6 +1187,7 @@ The SSA transform rewrites
 
 .. code-block:: yul
 
+    // This will not compile (E is undefined)
     a := E
     mstore(a, 1)
 
@@ -1193,6 +1195,7 @@ to
 
 .. code-block:: yul
 
+    // This will not compile (E is undefined)
     let a_1 := E
     a := a_1
     mstore(a_1, 1)
@@ -1204,6 +1207,7 @@ snippet is turned into
 
 .. code-block:: yul
 
+    // This will not compile (E is undefined)
     a := E
     let a_1 := a
     mstore(a_1, 1)

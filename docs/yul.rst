@@ -198,6 +198,7 @@ has to be specified after a colon:
 
 .. code-block:: yul
 
+    // This will not compile (uint32 type not implemented yet)
     let x := and("abc":uint32, add(3:uint256, 2:uint256))
 
 
@@ -212,6 +213,7 @@ they have to be assigned to local variables.
 
 .. code-block:: yul
 
+    function f(x, y) -> a, b { }
     mstore(0x80, add(mload(0x80), 3))
     // Here, the user-defined function `f` returns
     // two values. The definition of the function
@@ -271,6 +273,7 @@ that returns multiple values.
 
 .. code-block:: yul
 
+    // This will not compile (uint32 type not implemented yet)
     {
         let zero:uint32 := 0:uint32
         let v:uint256, t:uint32 := f()
@@ -314,6 +317,7 @@ you need multiple alternatives.
 
 .. code-block:: yul
 
+    let value := 0
     if eq(value, 0) { revert(0, 0) }
 
 The curly braces for the body are required.
