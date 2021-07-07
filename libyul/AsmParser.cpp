@@ -131,11 +131,13 @@ void Parser::fetchSourceLocationFromComment()
 		m_locationOverride = SourceLocation{};
 		if (!sourceIndex || !start || !end)
 			m_errorReporter.syntaxError(6367_error, commentLocation, "Invalid value in source location mapping. Could not parse location specification.");
-		else if (!((start < 0 && end < 0) || (start >= 0 && *start <= *end)))
+		else if (!((*start < 0 && *end < 0) || (*start >= 0 && *start <= *end)))
 			m_errorReporter.syntaxError(5798_error, commentLocation, "Invalid value in source location mapping. Start offset larger than end offset.");
+		else if (sourceIndex == -1 && (0 <= *start && *start <= *end)) // Use source index -1 to indicate original source.
+			m_locationOverride = SourceLocation{*start, *end, ParserBase::currentLocation().source};
 		else if (!(sourceIndex >= 0 && m_charStreamMap->count(static_cast<unsigned>(*sourceIndex))))
 			m_errorReporter.syntaxError(2674_error, commentLocation, "Invalid source mapping. Source index not defined via @use-src.");
-		else if (sourceIndex >= 0)
+		else
 		{
 			shared_ptr<CharStream> charStream = m_charStreamMap->at(static_cast<unsigned>(*sourceIndex));
 			solAssert(charStream, "");
@@ -176,7 +178,7 @@ Statement Parser::parseStatement()
 		_if.condition = make_unique<Expression>(parseExpression());
 		_if.body = parseBlock();
 		if (m_useSourceLocationFrom == UseSourceLocationFrom::Scanner)
-			_if.debugData = updateLocationEndFrom(_if.debugData, currentLocation());
+			_if.debugData = updateLocationEndFrom(_if.debugData, _if.body.debugData->location);
 		return Statement{move(_if)};
 	}
 	case Token::Switch:
