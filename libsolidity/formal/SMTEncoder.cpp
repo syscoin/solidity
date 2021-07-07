@@ -617,6 +617,9 @@ void SMTEncoder::endVisit(FunctionCall const& _funCall)
 	case FunctionType::Kind::BlockHash:
 		defineExpr(_funCall, state().blockhash(expr(*_funCall.arguments().at(0))));
 		break;
+	case FunctionType::Kind::SYSBlockHash:
+		defineExpr(_funCall, state().sysblockhash(expr(*_funCall.arguments().at(0))));
+		break;
 	case FunctionType::Kind::AddMod:
 	case FunctionType::Kind::MulMod:
 		visitAddMulMod(_funCall);

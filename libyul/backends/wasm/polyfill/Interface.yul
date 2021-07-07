@@ -156,7 +156,12 @@ function blockhash(x1, x2, x3, x4) -> z1, z2, z3, z4 {
 		z1, z2, z3, z4 := mload_internal(0:i32)
 	}
 }
-
+function sysblockhash(x1, x2, x3, x4) -> z1, z2, z3, z4 {
+	let r:i32 := eth.readSYSHash(u256_to_i64(x1, x2, x3, x4), 0:i32)
+	if i32.eqz(r) {
+		z1, z2, z3, z4 := mload_internal(0:i32)
+	}
+}
 function coinbase() -> z1, z2, z3, z4 {
 	eth.getBlockCoinbase(12:i32)
 	z1, z2, z3, z4 := mload_address(0:i32)

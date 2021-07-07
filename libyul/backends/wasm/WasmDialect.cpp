@@ -191,6 +191,7 @@ void WasmDialect::addExternals()
 		{"eth", "getAddress", {i32ptr}, {}},
 		{"eth", "getExternalBalance", {i32ptr, i32ptr}, {}},
 		{"eth", "getBlockHash", {i64, i32ptr}, {i32}},
+		{"eth", "readSYSHash", {i64, i32ptr}, {i32}},
 		{"eth", "call", {i64, i32ptr, i32ptr, i32ptr, i32}, {i32}},
 		{"eth", "callDataCopy", {i32ptr, i32, i32}, {}},
 		{"eth", "getCallDataSize", {}, {i32}},

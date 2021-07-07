@@ -644,7 +644,7 @@ the arguments.
 +-----------------------------------+--------------------------------------+
 |``gasleft``, ``blockhash``,        |Abstracted with UF.                   |
 |``keccak256``, ``ecrecover``       |                                      |
-|``ripemd160``                      |                                      |
+|``ripemd160``, ``sysblockhash``    |                                      |
 +-----------------------------------+--------------------------------------+
 |pure functions without             |Abstracted with UF                    |
 |implementation (external or        |                                      |

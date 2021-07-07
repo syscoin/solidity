@@ -515,6 +515,7 @@ map<string, optional<string>> Predicate::readTxVars(smtutil::Expression const& _
 		{"block.number", TypeProvider::uint256()},
 		{"block.timestamp", TypeProvider::uint256()},
 		{"blockhash", TypeProvider::array(DataLocation::Memory, TypeProvider::uint256())},
+		{"sysblockhash", TypeProvider::array(DataLocation::Memory, TypeProvider::uint256())},
 		{"msg.data", TypeProvider::bytesMemory()},
 		{"msg.sender", TypeProvider::address()},
 		{"msg.sig", TypeProvider::uint256()},

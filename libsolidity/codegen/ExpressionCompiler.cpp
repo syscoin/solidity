@@ -963,6 +963,12 @@ bool ExpressionCompiler::visit(FunctionCall const& _functionCall)
 			m_context << Instruction::BLOCKHASH;
 			break;
 		}
+		case FunctionType::Kind::SYSBlockHash:
+		{
+			acceptAndConvert(*arguments[0], *function.parameterTypes()[0], true);
+			m_context << Instruction::SYSBLOCKHASH;
+			break;
+		}
 		case FunctionType::Kind::AddMod:
 		case FunctionType::Kind::MulMod:
 		{

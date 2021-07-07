@@ -104,6 +104,7 @@ Global Variables
 - ``revert()``: abort execution and revert state changes
 - ``revert(string memory message)``: abort execution and revert state changes providing an explanatory string
 - ``blockhash(uint blockNumber) returns (bytes32)``: hash of the given block - only works for 256 most recent blocks
+- ``sysblockhash(uint blockNumber) returns (bytes32)``: Syscoin SHA-256 block hash of the given NEVM block - only works for 50000 most recent blocks
 - ``keccak256(bytes memory) returns (bytes32)``: compute the Keccak-256 hash of the input
 - ``sha256(bytes memory) returns (bytes32)``: compute the SHA-256 hash of the input
 - ``ripemd160(bytes memory) returns (bytes20)``: compute the RIPEMD-160 hash of the input

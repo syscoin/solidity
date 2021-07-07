@@ -1147,6 +1147,7 @@ public:
 		SetGas, ///< modify the default gas value for the function call
 		SetValue, ///< modify the default value transfer for the function call
 		BlockHash, ///< BLOCKHASH
+		SYSBlockHash, ///< SYSBLOCKHASH
 		AddMod, ///< ADDMOD
 		MulMod, ///< MULMOD
 		ArrayPush, ///< .push() to a dynamically sized array in storage

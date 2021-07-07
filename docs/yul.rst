@@ -885,6 +885,8 @@ the ``dup`` and ``swap`` instructions as well as ``jump`` instructions, labels a
 +-------------------------+-----+---+-----------------------------------------------------------------+
 | blockhash(b)            |     | F | hash of block nr b - only for last 256 blocks excluding current |
 +-------------------------+-----+---+-----------------------------------------------------------------+
+| sysblockhash(b)         |     | F | SYS hash of block nr b - only for last 50000 exluding current   |
++-------------------------+-----+---+-----------------------------------------------------------------+
 | coinbase()              |     | F | current mining beneficiary                                      |
 +-------------------------+-----+---+-----------------------------------------------------------------+
 | timestamp()             |     | F | timestamp of the current block in seconds since the epoch       |

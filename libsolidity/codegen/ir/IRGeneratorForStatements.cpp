@@ -1373,6 +1373,21 @@ void IRGeneratorForStatements::endVisit(FunctionCall const& _functionCall)
 		define(_functionCall) << functions[functionType->kind()] << "(" << args << ")\n";
 		break;
 	}
+	case FunctionType::Kind::SYSBlockHash:
+	{
+		static map<FunctionType::Kind, string> functions = {
+			{FunctionType::Kind::GasLeft, "gas"},
+			{FunctionType::Kind::Selfdestruct, "selfdestruct"},
+			{FunctionType::Kind::SYSBlockHash, "sysblockhash"},
+		};
+		solAssert(functions.find(functionType->kind()) != functions.end(), "");
+
+		string args;
+		for (size_t i = 0; i < arguments.size(); ++i)
+			args += (args.empty() ? "" : ", ") + expressionAsType(*arguments[i], *(parameterTypes[i]));
+		define(_functionCall) << functions[functionType->kind()] << "(" << args << ")\n";
+		break;
+	}
 	case FunctionType::Kind::Creation:
 	{
 		solAssert(!functionType->gasSet(), "Gas limit set for contract creation.");

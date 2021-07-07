@@ -103,7 +103,10 @@ smtutil::Expression SymbolicState::blockhash(smtutil::Expression _blockNumber) c
 {
 	return smtutil::Expression::select(m_tx.member("blockhash"), move(_blockNumber));
 }
-
+smtutil::Expression SymbolicState::sysblockhash(smtutil::Expression _blockNumber) const
+{
+	return smtutil::Expression::select(m_tx.member("sysblockhash"), move(_blockNumber));
+}
 void SymbolicState::transfer(smtutil::Expression _from, smtutil::Expression _to, smtutil::Expression _value)
 {
 	unsigned indexBefore = m_state.index();
