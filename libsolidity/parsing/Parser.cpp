@@ -1539,7 +1539,7 @@ ASTPointer<InlineAssembly> Parser::parseInlineAssembly(ASTPointer<ASTString> con
 	yul::Parser asmParser(m_errorReporter, dialect);
 	std::shared_ptr<yul::AST> ast = asmParser.parseInline(m_scanner);
 	if (ast == nullptr)
-		BOOST_THROW_EXCEPTION(FatalError());
+		solThrow(FatalError, "Failed to parse inline assembly.");
 
 	location.end = nativeLocationOf(ast->root()).end;
 	return std::make_shared<InlineAssembly>(nextID(), location, _docString, dialect, std::move(flags), ast);
