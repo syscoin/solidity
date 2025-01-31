@@ -60,7 +60,7 @@ Please refer to the solc-js repository for instructions.
 
 .. code-block:: bash
 
-    npm install -g solc
+    npm install --global solc
 
 .. note::
 
@@ -94,7 +94,13 @@ local folder for input and output, and specify the contract to compile. For exam
 
 .. code-block:: bash
 
-    docker run -v /local/path:/sources ethereum/solc:stable -o /sources/output --abi --bin /sources/Contract.sol
+    docker run \
+        --volume "/tmp/some/local/path/:/sources/" \
+        ethereum/solc:stable \
+            /sources/Contract.sol \
+            --abi \
+            --bin \
+            --output-dir /sources/output/
 
 You can also use the standard JSON interface (which is recommended when using the compiler with tooling).
 When using this interface, it is not necessary to mount any directories as long as the JSON input is
