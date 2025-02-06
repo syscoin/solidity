@@ -2,4 +2,4 @@ enum Color {Red, Green, Blue}
 
 contract C layout at Color.Red {}
 // ----
-// UnimplementedFeatureError 1834: (31-64): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 6396: (52-61): The base slot of the storage layout must evaluate to a rational number.

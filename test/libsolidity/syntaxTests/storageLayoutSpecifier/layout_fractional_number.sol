@@ -4,4 +4,8 @@ contract C layout at .1 {}
 contract D layout at 42e-10 {}
 contract E layout at 1_7e-10 {}
 // ----
-// UnimplementedFeatureError 1834: (0-27): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 1763: (21-24): The base slot of the storage layout must evaluate to an integer.
+// TypeError 1763: (49-52): The base slot of the storage layout must evaluate to an integer.
+// TypeError 1763: (77-79): The base slot of the storage layout must evaluate to an integer.
+// TypeError 1763: (104-110): The base slot of the storage layout must evaluate to an integer.
+// TypeError 1763: (135-142): The base slot of the storage layout must evaluate to an integer.

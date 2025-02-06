@@ -1,3 +1,3 @@
 contract C layout at uint(keccak256(bytes.concat("ABCD"))) {}
 // ----
-// UnimplementedFeatureError 1834: (0-61): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 1139: (21-58): The base slot of the storage layout must be a compile-time constant expression.

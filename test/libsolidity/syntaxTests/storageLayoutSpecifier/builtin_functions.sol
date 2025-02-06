@@ -15,4 +15,16 @@ contract M layout at uint(address(this).codehash) { }
 // ====
 // EVMVersion: >=paris
 // ----
-// UnimplementedFeatureError 1834: (0-38): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 1139: (21-34): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (60-73): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (99-111): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (137-169): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (195-211): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (237-255): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (281-290): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (316-326): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (352-360): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (386-397): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (423-441): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (467-488): The base slot of the storage layout must be a compile-time constant expression.
+// TypeError 1139: (514-542): The base slot of the storage layout must be a compile-time constant expression.

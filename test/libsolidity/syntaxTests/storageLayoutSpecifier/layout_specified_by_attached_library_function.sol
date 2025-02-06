@@ -9,4 +9,4 @@ contract C layout at 2.f() {
     using L for *;
 }
 // ----
-// UnimplementedFeatureError 1834: (96-145): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 1139: (117-122): The base slot of the storage layout must be a compile-time constant expression.

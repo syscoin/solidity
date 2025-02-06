@@ -3,4 +3,4 @@ function f() pure returns (uint256) {
 }
 contract C layout at f() { }
 // ----
-// UnimplementedFeatureError 1834: (56-84): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 1139: (77-80): The base slot of the storage layout must be a compile-time constant expression.

@@ -97,10 +97,41 @@ bool ContractLevelChecker::check(ContractDefinition const& _contract)
 	checkBaseABICompatibility(_contract);
 	checkPayableFallbackWithoutReceive(_contract);
 	checkStorageSize(_contract);
+	checkStorageLayoutSpecifier(_contract);
 
 	return !Error::containsErrors(m_errorReporter.errors());
 }
 
+void ContractLevelChecker::checkStorageLayoutSpecifier(ContractDefinition const& _contract)
+{
+	if (_contract.storageLayoutSpecifier())
+	{
+		solAssert(!_contract.isLibrary() && !_contract.isInterface());
+
+		if (_contract.abstract())
+			m_errorReporter.typeError(
+				7587_error,
+				_contract.storageLayoutSpecifier()->location(),
+				"Storage layout cannot be specified for abstract contracts."
+			);
+	}
+
+	for (auto const* ancestorContract: _contract.annotation().linearizedBaseContracts | ranges::views::reverse)
+	{
+		if (*ancestorContract == _contract)
+			continue;
+		if (ancestorContract->storageLayoutSpecifier())
+			m_errorReporter.typeError(
+				8894_error,
+				_contract.location(),
+				SecondarySourceLocation().append(
+					"Storage layout was already specified here.",
+					ancestorContract->storageLayoutSpecifier()->location()
+				),
+				"Storage layout can only be specified in the most derived contract."
+			);
+	}
+}
 void ContractLevelChecker::checkDuplicateFunctions(ContractDefinition const& _contract)
 {
 	/// Checks that two functions with the same name defined in this contract have different

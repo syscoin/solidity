@@ -3,4 +3,4 @@ contract B is A {}
 contract C is B layout at 42 {}
 contract D is C {}
 // ----
-// UnimplementedFeatureError 1834: (33-64): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 8894: (65-83): Storage layout can only be specified in the most derived contract.

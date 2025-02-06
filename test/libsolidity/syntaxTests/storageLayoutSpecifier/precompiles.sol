@@ -1,4 +1,5 @@
 contract A layout at addmod(1, 2, 3) {}
 contract B layout at mulmod(3, 2, 1) {}
 // ----
-// UnimplementedFeatureError 1834: (0-39): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 6396: (21-36): The base slot of the storage layout must evaluate to a rational number.
+// TypeError 6396: (61-76): The base slot of the storage layout must evaluate to a rational number.

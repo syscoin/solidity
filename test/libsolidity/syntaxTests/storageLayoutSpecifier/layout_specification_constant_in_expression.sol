@@ -1,4 +1,4 @@
 uint constant X = 42;
 contract C layout at 0xffff * (50 - X) { }
 // ----
-// UnimplementedFeatureError 1834: (22-64): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 6396: (43-60): The base slot of the storage layout must evaluate to a rational number.

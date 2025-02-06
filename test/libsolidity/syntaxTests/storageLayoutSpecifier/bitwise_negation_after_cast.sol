@@ -1,3 +1,3 @@
 contract C layout at ~uint(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF) {}
 // ----
-// UnimplementedFeatureError 1834: (0-97): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 6396: (21-94): The base slot of the storage layout must evaluate to a rational number.

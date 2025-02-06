@@ -8,4 +8,4 @@ contract A {
 
 contract C is A layout at A.SA { }
 // ----
-// UnimplementedFeatureError 1834: (89-123): Code generation is not supported for contracts with specified storage layout base.
+// TypeError 1139: (115-119): The base slot of the storage layout must be a compile-time constant expression.
