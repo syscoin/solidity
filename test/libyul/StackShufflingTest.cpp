@@ -174,7 +174,8 @@ TestCase::TestResult StackShufflingTest::run(std::ostream& _stream, std::string 
 		[&](){ // pop
 			output << stackToString(m_sourceStack, dialect) << std::endl;
 			output << "POP" << std::endl;
-		}
+		},
+		16u // TODO: make it a test setting
     );
 
 	output << stackToString(m_sourceStack, dialect) << std::endl;

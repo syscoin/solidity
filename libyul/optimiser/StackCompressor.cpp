@@ -249,6 +249,7 @@ std::tuple<bool, Block> StackCompressor::run(
 	);
 	bool usesOptimizedCodeGenerator = false;
 	bool simulateFunctionsWithJumps = true;
+	size_t reachableStackDepth = 16;
 	if (auto evmDialect = dynamic_cast<EVMDialect const*>(_object.dialect()))
 	{
 		usesOptimizedCodeGenerator =
@@ -256,6 +257,7 @@ std::tuple<bool, Block> StackCompressor::run(
 			evmDialect->evmVersion().canOverchargeGasForCall() &&
 			evmDialect->providesObjectAccess();
 		simulateFunctionsWithJumps = !evmDialect->eofVersion().has_value();
+		reachableStackDepth = evmDialect->reachableStackDepth();
 	}
 	bool allowMSizeOptimization = !MSizeFinder::containsMSize(*_object.dialect(), _object.code()->root());
 	Block astRoot = std::get<Block>(ASTCopier{}(_object.code()->root()));
@@ -270,7 +272,7 @@ std::tuple<bool, Block> StackCompressor::run(
 		eliminateVariablesOptimizedCodegen(
 			*_object.dialect(),
 			astRoot,
-			StackLayoutGenerator::reportStackTooDeep(*cfg, simulateFunctionsWithJumps),
+			StackLayoutGenerator::reportStackTooDeep(*cfg, simulateFunctionsWithJumps, reachableStackDepth),
 			allowMSizeOptimization
 		);
 	}

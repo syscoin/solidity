@@ -141,7 +141,7 @@ Block StackLimitEvader::run(
 			_object.summarizeStructure()
 		);
 		std::unique_ptr<CFG> cfg = ControlFlowGraphBuilder::build(analysisInfo, *evmDialect, astRoot);
-		run(_context, astRoot, StackLayoutGenerator::reportStackTooDeep(*cfg, !evmDialect->eofVersion().has_value()));
+		run(_context, astRoot, StackLayoutGenerator::reportStackTooDeep(*cfg, !evmDialect->eofVersion().has_value(), evmDialect->reachableStackDepth()));
 	}
 	else
 	{
