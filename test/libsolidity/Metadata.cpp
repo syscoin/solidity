@@ -458,16 +458,27 @@ BOOST_AUTO_TEST_CASE(metadata_optimiser_sequence)
 		{"dhfoDgvulfnTUtnIf", "fDn"}
 	};
 
-	auto check = [sourceCode](std::string const& _optimizerSequence, std::string const& _optimizerCleanupSequence)
+	std::vector<OptimiserSettings> settingsToTest;
+	for (auto const& [optimizerSequence, optimizerCleanupSequence]: sequences)
 	{
-		OptimiserSettings optimizerSettings = OptimiserSettings::minimal();
-		optimizerSettings.runYulOptimiser = true;
-		optimizerSettings.yulOptimiserSteps = _optimizerSequence;
-		optimizerSettings.yulOptimiserCleanupSteps = _optimizerCleanupSequence;
+		settingsToTest.emplace_back(OptimiserSettings::minimal());
+		settingsToTest.back().runYulOptimiser = true;
+		settingsToTest.back().yulOptimiserSteps = optimizerSequence;
+		settingsToTest.back().yulOptimiserCleanupSteps = optimizerCleanupSequence;
+	}
+
+	{
+		// test that a custom cleanup step sequence does not lead to default standard optimiser settings in metadata
+		settingsToTest.emplace_back(OptimiserSettings::standard());
+		settingsToTest.back().yulOptimiserCleanupSteps = "D";
+	}
+
+	auto check = [sourceCode](OptimiserSettings const& _optimizerSettings)
+	{
 		CompilerStack compilerStack;
 		compilerStack.setSources({{"", sourceCode}});
 		compilerStack.setEVMVersion(solidity::test::CommonOptions::get().evmVersion());
-		compilerStack.setOptimiserSettings(optimizerSettings);
+		compilerStack.setOptimiserSettings(_optimizerSettings);
 
 		BOOST_REQUIRE_MESSAGE(compilerStack.compile(), "Compiling contract failed");
 
@@ -480,12 +491,12 @@ BOOST_AUTO_TEST_CASE(metadata_optimiser_sequence)
 		BOOST_CHECK(metadata["settings"]["optimizer"]["details"]["yulDetails"].contains("optimizerSteps"));
 
 		std::string const metadataOptimizerSteps = metadata["settings"]["optimizer"]["details"]["yulDetails"]["optimizerSteps"].get<std::string>();
-		std::string const expectedMetadataOptimiserSteps = _optimizerSequence + ":" + _optimizerCleanupSequence;
+		std::string const expectedMetadataOptimiserSteps = _optimizerSettings.yulOptimiserSteps + ":" + _optimizerSettings.yulOptimiserCleanupSteps;
 		BOOST_CHECK_EQUAL(metadataOptimizerSteps, expectedMetadataOptimiserSteps);
 	};
 
-	for (auto const& [sequence, cleanupSequence] : sequences)
-		check(sequence, cleanupSequence);
+	for (auto const& optimizerSettings: settingsToTest)
+		check(optimizerSettings);
 }
 
 BOOST_AUTO_TEST_CASE(metadata_license_missing)
