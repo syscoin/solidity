@@ -232,13 +232,10 @@ TestCase::TestResult StackLayoutGeneratorTest::run(std::ostream& _stream, std::s
 		yulStack.parserResult()->code()->root()
 	);
 
-	bool simulateFunctionsWithJumps = true;
-	size_t reachableStackDepth = 16;
-	if (auto const* evmDialect = dynamic_cast<EVMDialect const*>(&yulStack.dialect()))
-	{
-		simulateFunctionsWithJumps = !evmDialect->eofVersion().has_value();
-		reachableStackDepth = evmDialect->reachableStackDepth();
-	}
+	auto const* evmDialect = dynamic_cast<EVMDialect const*>(&yulStack.dialect());
+	solAssert(evmDialect, "StackLayoutGenerator can only be run on EVM dialects.");
+	bool simulateFunctionsWithJumps = !evmDialect->eofVersion().has_value();
+	size_t reachableStackDepth = evmDialect->reachableStackDepth();
 
 	StackLayout stackLayout = StackLayoutGenerator::run(*cfg, simulateFunctionsWithJumps, reachableStackDepth);
 
