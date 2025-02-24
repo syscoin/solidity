@@ -370,6 +370,31 @@ std::pair<ContractKind, bool> Parser::parseContractKind()
 	return std::make_pair(kind, abstract);
 }
 
+ASTPointer<StorageLayoutSpecifier> Parser::parseStorageLayoutSpecifier()
+{
+	RecursionGuard recursionGuard(*this);
+	ASTNodeFactory nodeFactory(*this);
+	ASTPointer<ASTString> layoutIdentifier = expectIdentifierToken();
+	solAssert(layoutIdentifier && *layoutIdentifier == "layout");
+	if (
+		m_scanner->currentToken() != Token::Identifier ||
+		m_scanner->currentLiteral() != "at"
+	)
+		m_errorReporter.parserError(
+			1994_error,
+			m_scanner->currentLocation(),
+			"Expected \'at\' but got " + tokenName(m_scanner->currentToken())
+		);
+
+	advance();
+	ASTPointer<Expression> baseSlotExpression = parseExpression();
+	solAssert(baseSlotExpression);
+	nodeFactory.setEndPositionFromNode(baseSlotExpression);
+	return nodeFactory.createNode<StorageLayoutSpecifier>(
+		baseSlotExpression
+	);
+}
+
 ASTPointer<ContractDefinition> Parser::parseContractDefinition()
 {
 	RecursionGuard recursionGuard(*this);
@@ -380,16 +405,54 @@ ASTPointer<ContractDefinition> Parser::parseContractDefinition()
 	std::vector<ASTPointer<InheritanceSpecifier>> baseContracts;
 	std::vector<ASTPointer<ASTNode>> subNodes;
 	std::pair<ContractKind, bool> contractKind{};
+	ASTPointer<StorageLayoutSpecifier> storageLayoutSpecifier;
 	documentation = parseStructuredDocumentation();
 	contractKind = parseContractKind();
 	std::tie(name, nameLocation) = expectIdentifierWithLocation();
-	if (m_scanner->currentToken() == Token::Is)
-		do
+	while (true)
+	{
+		if (m_scanner->currentToken() == Token::Is)
 		{
-			advance();
-			baseContracts.push_back(parseInheritanceSpecifier());
+			if (baseContracts.size() != 0)
+				m_errorReporter.parserError(
+					6668_error,
+					m_scanner->currentLocation(),
+					SecondarySourceLocation().append("Previous list:", baseContracts[0]->location()),
+					"More than one inheritance list."
+				);
+			do
+			{
+				advance();
+				baseContracts.push_back(parseInheritanceSpecifier());
+			}
+			while (m_scanner->currentToken() == Token::Comma);
 		}
-		while (m_scanner->currentToken() == Token::Comma);
+		else if (
+			m_scanner->currentToken() == Token::Identifier &&
+			m_scanner->currentLiteral() == "layout" &&
+			contractKind.first == ContractKind::Contract
+		)
+		{
+			if (storageLayoutSpecifier)
+				m_errorReporter.parserError(
+					8714_error,
+					m_scanner->currentLocation(),
+					SecondarySourceLocation().append("Previous definition:", storageLayoutSpecifier->location()),
+					"More than one storage layout definition."
+				);
+
+			storageLayoutSpecifier = parseStorageLayoutSpecifier();
+		}
+		else
+			break;
+	}
+
+	if (storageLayoutSpecifier && baseContracts.size() > 0)
+	{
+		solAssert(!storageLayoutSpecifier->location().intersects(baseContracts[0]->location()));
+		solAssert(!baseContracts[0]->location().intersects(storageLayoutSpecifier->location()));
+	}
+
 	expectToken(Token::LBrace);
 	while (true)
 	{
@@ -443,7 +506,8 @@ ASTPointer<ContractDefinition> Parser::parseContractDefinition()
 		baseContracts,
 		subNodes,
 		contractKind.first,
-		contractKind.second
+		contractKind.second,
+		storageLayoutSpecifier
 	);
 }
 
