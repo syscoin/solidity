@@ -1,0 +1,21 @@
+Error: Storage layout can only be specified in the most derived contract.
+ --> <stdin>:5:1:
+  |
+5 | contract B is A {}
+  | ^^^^^^^^^^^^^^^^^^
+Note: Storage layout was already specified here.
+ --> <stdin>:4:12:
+  |
+4 | contract A layout at 0x1234 {}
+  |            ^^^^^^^^^^^^^^^^
+
+Error: Storage layout can only be specified in the most derived contract.
+ --> <stdin>:6:1:
+  |
+6 | contract C layout at 0x1234 is B {}
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Note: Storage layout was already specified here.
+ --> <stdin>:4:12:
+  |
+4 | contract A layout at 0x1234 {}
+  |            ^^^^^^^^^^^^^^^^
