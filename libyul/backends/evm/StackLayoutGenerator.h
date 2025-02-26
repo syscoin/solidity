@@ -22,6 +22,7 @@
 #pragma once
 
 #include <libyul/backends/evm/ControlFlowGraph.h>
+#include <libyul/backends/evm/EVMDialect.h>
 
 #include <map>
 
@@ -55,14 +56,13 @@ public:
 		std::vector<YulName> variableChoices;
 	};
 
-	static StackLayout run(CFG const& _cfg, bool _simulateFunctionsWithJumps, size_t _reachableStackDepth);
+	static StackLayout run(CFG const& _cfg, EVMDialect const& _evmDialect);
 	/// @returns a map from function names to the stack too deep errors occurring in that function.
 	/// Requires @a _cfg to be a control flow graph generated from disambiguated Yul.
 	/// The empty string is mapped to the stack too deep errors of the main entry point.
 	static std::map<YulName, std::vector<StackTooDeep>> reportStackTooDeep(
 		CFG const& _cfg,
-		bool _simulateFunctionsWithJumps,
-		size_t _reachableStackDepth
+		EVMDialect const& _evmDialect
 	);
 	/// @returns all stack too deep errors in the function named @a _functionName.
 	/// Requires @a _cfg to be a control flow graph generated from disambiguated Yul.
@@ -70,16 +70,14 @@ public:
 	static std::vector<StackTooDeep> reportStackTooDeep(
 		CFG const& _cfg,
 		YulName _functionName,
-		bool _simulateFunctionsWithJumps,
-		size_t _reachableStackDepth
+		EVMDialect const& _evmDialect
 	);
 
 private:
 	StackLayoutGenerator(
 		StackLayout& _context,
 		CFG::FunctionInfo const* _functionInfo,
-		bool _simulateFunctionsWithJumps,
-		size_t _reachableStackDepth
+		EVMDialect const& _evmDialect
 	);
 
 	/// @returns the optimal entry stack layout, s.t. @a _operation can be applied to it and
@@ -128,11 +126,19 @@ private:
 	//// Fills in junk when entering branches that do not need a clean stack in case the result is cheaper.
 	void fillInJunk(CFG::BasicBlock const& _block, CFG::FunctionInfo const* _functionInfo = nullptr);
 
+	/// True if it simulates functions with jumps. False otherwise. True for legacy bytecode.
+	bool simulateFunctionsWithJumps() const
+	{
+		return !m_evmDialect.eofVersion().has_value();
+	}
+	size_t reachableStackDepth() const
+	{
+		return m_evmDialect.reachableStackDepth();
+	}
+
 	StackLayout& m_layout;
 	CFG::FunctionInfo const* m_currentFunctionInfo = nullptr;
-	/// True if it simulates functions with jumps. False otherwise. True for legacy bytecode
-	bool m_simulateFunctionsWithJumps = true;
-	size_t const m_reachableStackDepth{};
+	EVMDialect const& m_evmDialect;
 };
 
 }

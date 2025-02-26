@@ -234,10 +234,8 @@ TestCase::TestResult StackLayoutGeneratorTest::run(std::ostream& _stream, std::s
 
 	auto const* evmDialect = dynamic_cast<EVMDialect const*>(&yulStack.dialect());
 	solAssert(evmDialect, "StackLayoutGenerator can only be run on EVM dialects.");
-	bool simulateFunctionsWithJumps = !evmDialect->eofVersion().has_value();
-	size_t reachableStackDepth = evmDialect->reachableStackDepth();
 
-	StackLayout stackLayout = StackLayoutGenerator::run(*cfg, simulateFunctionsWithJumps, reachableStackDepth);
+	StackLayout stackLayout = StackLayoutGenerator::run(*cfg, *evmDialect);
 
 	output << "digraph CFG {\nnodesep=0.7;\nnode[shape=box];\n\n";
 	StackLayoutPrinter printer{output, stackLayout, yulStack.dialect()};
