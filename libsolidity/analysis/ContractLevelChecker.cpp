@@ -30,6 +30,7 @@
 
 #include <fmt/format.h>
 
+#include <range/v3/algorithm/find_if.hpp>
 #include <range/v3/view/reverse.hpp>
 
 using namespace solidity;
@@ -116,19 +117,22 @@ void ContractLevelChecker::checkStorageLayoutSpecifier(ContractDefinition const&
 			);
 	}
 
-	for (auto const* ancestorContract: _contract.annotation().linearizedBaseContracts | ranges::views::reverse)
+	for (auto const& baseContractSpecifier: _contract.baseContracts())
 	{
-		if (*ancestorContract == _contract)
-			continue;
-		if (ancestorContract->storageLayoutSpecifier())
+		auto const* baseContract = dynamic_cast<ContractDefinition const*>(
+			baseContractSpecifier->name().annotation().referencedDeclaration
+		);
+
+		solAssert(baseContract);
+		if (baseContract->storageLayoutSpecifier())
 			m_errorReporter.typeError(
 				8894_error,
-				_contract.location(),
+				baseContractSpecifier->location(),
 				SecondarySourceLocation().append(
-					"Storage layout was already specified here.",
-					ancestorContract->storageLayoutSpecifier()->location()
+					"Custom storage layout defined here:",
+					baseContract->storageLayoutSpecifier()->location()
 				),
-				"Storage layout can only be specified in the most derived contract."
+				"Cannot inherit from a contract with a custom storage layout."
 			);
 	}
 }
