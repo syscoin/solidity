@@ -23,6 +23,7 @@
 #include <libsolidity/analysis/ContractLevelChecker.h>
 
 #include <libsolidity/ast/AST.h>
+#include <libsolidity/ast/ASTUtils.h>
 #include <libsolidity/ast/TypeProvider.h>
 #include <libsolidity/analysis/TypeChecker.h>
 #include <libsolutil/FunctionSelector.h>
@@ -590,19 +591,16 @@ void ContractLevelChecker::checkPayableFallbackWithoutReceive(ContractDefinition
 
 void ContractLevelChecker::checkStorageSize(ContractDefinition const& _contract)
 {
-	bigint size = 0;
-	for (ContractDefinition const* contract: _contract.annotation().linearizedBaseContracts | ranges::views::reverse)
-		for (VariableDeclaration const* variable: contract->stateVariables())
-			if (
-				!(variable->isConstant() || variable->immutable()) &&
-				variable->referenceLocation() == VariableDeclaration::Location::Unspecified
-			)
-			{
-				size += variable->annotation().type->storageSizeUpperBound();
-				if (size >= bigint(1) << 256)
-				{
-					m_errorReporter.typeError(7676_error, _contract.location(), "Contract requires too much storage.");
-					break;
-				}
-			}
+	using enum VariableDeclaration::Location;
+	for (VariableDeclaration::Location location: {Unspecified, Transient})
+	{
+		bigint size = contractStorageSizeUpperBound(_contract, location);
+		if (size >= bigint(1) << 256)
+		{
+			if (location == Unspecified)
+				m_errorReporter.typeError(7676_error, _contract.location(), "Contract requires too much storage.");
+			else
+				m_errorReporter.typeError(5026_error, _contract.location(), "Contract requires too much transient storage.");
+		}
+	}
 }
