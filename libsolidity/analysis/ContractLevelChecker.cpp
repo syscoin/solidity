@@ -593,7 +593,10 @@ void ContractLevelChecker::checkStorageSize(ContractDefinition const& _contract)
 	bigint size = 0;
 	for (ContractDefinition const* contract: _contract.annotation().linearizedBaseContracts | ranges::views::reverse)
 		for (VariableDeclaration const* variable: contract->stateVariables())
-			if (!(variable->isConstant() || variable->immutable()))
+			if (
+				!(variable->isConstant() || variable->immutable()) &&
+				variable->referenceLocation() == VariableDeclaration::Location::Unspecified
+			)
 			{
 				size += variable->annotation().type->storageSizeUpperBound();
 				if (size >= bigint(1) << 256)

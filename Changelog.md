@@ -27,6 +27,7 @@ Bugfixes:
  * SMTChecker: Fix SMT logic error when translating invariants involving array store and select operations.
  * SMTChecker: Fix wrong encoding of string literals as arguments of ``ecrecover`` precompile.
  * Standard JSON Interface: Fix ``generatedSources`` and ``sourceMap`` being generated internally even when not requested.
+ * TypeChecker: Fix supurious compilation errors due to incorrect computation of contract storage size which erroneously included transient storage variables.
  * Yul: Fix internal compiler error when a code generation error should be reported instead.
 
 
