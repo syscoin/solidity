@@ -1412,6 +1412,7 @@ Json StandardCompiler::compileSolidity(StandardCompiler::InputsAndSettings _inpu
 				));
 		}
 	}
+	// NOTE: This includes langutil::StackTooDeepError.
 	catch (CompilerError const& _exception)
 	{
 		errors.emplace_back(formatErrorWithException(
@@ -1420,6 +1421,16 @@ Json StandardCompiler::compileSolidity(StandardCompiler::InputsAndSettings _inpu
 			Error::Type::CompilerError,
 			"general",
 			"Compiler error (" + _exception.lineInfo() + ")"
+		));
+	}
+	catch (yul::StackTooDeepError const& _exception)
+	{
+		errors.emplace_back(formatErrorWithException(
+			compilerStack,
+			_exception,
+			Error::Type::YulException,
+			"general",
+			"" // No prefix needed. These messages already say it's a "stack too deep" error.
 		));
 	}
 	catch (InternalCompilerError const& _exception)
@@ -1437,14 +1448,14 @@ Json StandardCompiler::compileSolidity(StandardCompiler::InputsAndSettings _inpu
 		// let StandardCompiler::compile handle this
 		throw _exception;
 	}
-	catch (yul::YulException const& _exception)
+	catch (YulAssertion const& _exception)
 	{
 		errors.emplace_back(formatErrorWithException(
 			compilerStack,
 			_exception,
 			Error::Type::YulException,
 			"general",
-			"Yul exception"
+			"Yul assertion failed (" + _exception.lineInfo() + ")"
 		));
 	}
 	catch (smtutil::SMTLogicError const& _exception)

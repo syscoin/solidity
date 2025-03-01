@@ -16,6 +16,7 @@ Compiler Features:
 
 
 Bugfixes:
+ * Commandline Interface: Report StackTooDeep errors in compiler mode as proper errors instead of printing diagnostic information meant for internal compiler errors.
  * General: Fix internal compiler error when requesting IR AST outputs for interfaces and abstract contracts.
  * Metadata: Fix custom cleanup sequence missing from metadata when other optimizer settings have default values.
  * SMTChecker: Fix internal compiler error when analyzing overflowing expressions or bitwise negation of unsigned types involving constants.
