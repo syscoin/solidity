@@ -162,7 +162,11 @@ void CommonOptions::validate() const
 		std::cout << std::endl << "DO NOT COMMIT THE UPDATED EXPECTATIONS." << std::endl << std::endl;
 	}
 
-	solRequire(!eofVersion().has_value() || evmVersion().supportsEOF(), ConfigException, "EOF is unavailable before Osaka fork.");
+	solRequire(
+		!eofVersion().has_value() || evmVersion().supportsEOF(),
+		ConfigException,
+		"EOF is not supported by EVM versions earlier than " + langutil::EVMVersion::firstWithEOF().name() + "."
+	);
 }
 
 bool CommonOptions::parse(int argc, char const* const* argv)
