@@ -29,6 +29,7 @@ Bugfixes:
  * Standard JSON Interface: Fix ``generatedSources`` and ``sourceMap`` being generated internally even when not requested.
  * TypeChecker: Fix supurious compilation errors due to incorrect computation of contract storage size which erroneously included transient storage variables.
  * Yul: Fix internal compiler error when a code generation error should be reported instead.
+ * Yul Optimizer: Fix failing debug assertion due to dereferencing of an empty ``optional`` value.
 
 
 Build system:
