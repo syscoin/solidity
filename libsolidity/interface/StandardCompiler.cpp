@@ -131,7 +131,7 @@ Json formatErrorWithException(
 	);
 
 	if (std::string const* description = _exception.comment())
-		message = ((_message.length() > 0) ? (_message + ":") : "") + *description;
+		message = ((_message.length() > 0) ? (_message + ": ") : "") + *description;
 	else
 		message = _message;
 
@@ -1433,14 +1433,12 @@ Json StandardCompiler::compileSolidity(StandardCompiler::InputsAndSettings _inpu
 			"" // No prefix needed. These messages already say it's a "stack too deep" error.
 		));
 	}
-	catch (InternalCompilerError const& _exception)
+	catch (InternalCompilerError const&)
 	{
-		errors.emplace_back(formatErrorWithException(
-			compilerStack,
-			_exception,
+		errors.emplace_back(formatError(
 			Error::Type::InternalCompilerError,
 			"general",
-			"Internal compiler error (" + _exception.lineInfo() + ")"
+			"Internal compiler error:\n" + boost::current_exception_diagnostic_information()
 		));
 	}
 	catch (UnimplementedFeatureError const& _exception)
@@ -1448,24 +1446,20 @@ Json StandardCompiler::compileSolidity(StandardCompiler::InputsAndSettings _inpu
 		// let StandardCompiler::compile handle this
 		throw _exception;
 	}
-	catch (YulAssertion const& _exception)
+	catch (YulAssertion const&)
 	{
-		errors.emplace_back(formatErrorWithException(
-			compilerStack,
-			_exception,
+		errors.emplace_back(formatError(
 			Error::Type::YulException,
 			"general",
-			"Yul assertion failed (" + _exception.lineInfo() + ")"
+			"Yul assertion failed:\n" + boost::current_exception_diagnostic_information()
 		));
 	}
-	catch (smtutil::SMTLogicError const& _exception)
+	catch (smtutil::SMTLogicError const&)
 	{
-		errors.emplace_back(formatErrorWithException(
-			compilerStack,
-			_exception,
+		errors.emplace_back(formatError(
 			Error::Type::SMTLogicException,
 			"general",
-			"SMT logic exception"
+			"SMT logic error:\n" + boost::current_exception_diagnostic_information()
 		));
 	}
 	catch (...)
@@ -1838,7 +1832,10 @@ Json StandardCompiler::compile(Json const& _input) noexcept
 	}
 	catch (...)
 	{
-		return formatFatalError(Error::Type::InternalCompilerError, "Internal exception in StandardCompiler::compile: " +  boost::current_exception_diagnostic_information());
+		return formatFatalError(
+			Error::Type::InternalCompilerError,
+			"Uncaught exception:\n" + boost::current_exception_diagnostic_information()
+		);
 	}
 }
 
