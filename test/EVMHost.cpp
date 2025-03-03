@@ -1384,8 +1384,8 @@ void EVMHostPrinter::callRecords()
 				return "CREATE";
 			case evmc_call_kind::EVMC_CREATE2:
 				return "CREATE2";
-			default:
-				assertThrow(false, Exception, "Invalid call kind.");
+			case evmc_call_kind::EVMC_EOFCREATE:
+				return "EOFCREATE";
 		}
 		unreachable();
 	};

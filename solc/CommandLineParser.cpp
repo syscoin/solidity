@@ -1252,6 +1252,9 @@ void CommandLineParser::processArgs()
 		m_options.output.eofVersion = 1;
 	}
 
+	if (m_options.output.eofVersion.has_value() && !m_options.output.evmVersion.supportsEOF())
+		solThrow(CommandLineValidationError, "EOF is not supported by EVM versions earlier than " + EVMVersion::firstWithEOF().name() + ".");
+
 	if (m_args.count(g_strNoOptimizeYul) > 0 && m_args.count(g_strOptimizeYul) > 0)
 		solThrow(
 			CommandLineValidationError,
