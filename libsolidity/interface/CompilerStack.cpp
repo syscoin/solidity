@@ -827,7 +827,12 @@ YulStack CompilerStack::loadGeneratedIR(std::string const& _ir) const
 		yulAnalysisSuccessful,
 		_ir + "\n\n"
 		"Invalid IR generated:\n" +
-		SourceReferenceFormatter::formatErrorInformation(stack.errors(), stack) + "\n"
+		SourceReferenceFormatter::formatErrorInformation(
+			stack.errors(),
+			stack, // _charStreamProvider
+			false, // _colored
+			true   // _withErrorIds
+		) + "\n"
 	);
 
 	return stack;
